@@ -210,6 +210,7 @@ textarea {
     font-family: var(--font-family);
     font-weight: 600;
     font-size: 18px;
+    cursor: pointer;
     position: relative;
 }
 
