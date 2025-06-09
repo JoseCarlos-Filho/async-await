@@ -49,11 +49,30 @@ inputTags.addEventListener("keypress", (evento) => {
     if (evento.key === "Enter") {
         evento.preventDefault();
         const tagTexto = inputTags.value.trim();
-        if (tagTexto !== "") {
+        if (tagTexto !== "" && tagsDisponiveis.includes(tagTexto)) {
             const tagNova = document.createElement("li");
             tagNova.innerHTML = `<p>${tagTexto}</p> <img src="./img/close-black.svg" class="remove-tag">`
             listaTags.appendChild(tagNova);
             inputTags.value = "";
+        } else {
+            alert("Tag inválida ou não disponível.");
         }
     }
 });
+
+listaTags.addEventListener("click", (evento) => {
+    if (evento.target.classList.contains("remove-tag")) {
+        const tagASerRemovida = evento.target.parentElement;
+        listaTags.removeChild(tagASerRemovida);
+    }
+})
+
+const tagsDisponiveis = ["Front-end", "Programação", "Data Science", "Full-stack", "Mobile", "Machine Learning", "DevOps", "HTML", "CSS", "JavaScript", "React", "Vue", "Angular"];
+
+async function verificaTagsDisponiveis() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(tagsDisponiveis.includes(tagTexto));
+        }, 1000);
+    })
+}
