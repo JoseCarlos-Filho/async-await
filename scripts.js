@@ -45,21 +45,6 @@ inputUpload.addEventListener("change", async (evento) => {
 const inputTags = document.getElementById("input-tags");
 const listaTags = document.getElementById("lista-tags");
 
-inputTags.addEventListener("keypress", (evento) => {
-    if (evento.key === "Enter") {
-        evento.preventDefault();
-        const tagTexto = inputTags.value.trim();
-        if (tagTexto !== "" && tagsDisponiveis.includes(tagTexto)) {
-            const tagNova = document.createElement("li");
-            tagNova.innerHTML = `<p>${tagTexto}</p> <img src="./img/close-black.svg" class="remove-tag">`
-            listaTags.appendChild(tagNova);
-            inputTags.value = "";
-        } else {
-            alert("Tag inválida ou não disponível.");
-        }
-    }
-});
-
 listaTags.addEventListener("click", (evento) => {
     if (evento.target.classList.contains("remove-tag")) {
         const tagASerRemovida = evento.target.parentElement;
@@ -69,10 +54,33 @@ listaTags.addEventListener("click", (evento) => {
 
 const tagsDisponiveis = ["Front-end", "Programação", "Data Science", "Full-stack", "Mobile", "Machine Learning", "DevOps", "HTML", "CSS", "JavaScript", "React", "Vue", "Angular"];
 
-async function verificaTagsDisponiveis() {
+async function verificaTagsDisponiveis(tagTexto) {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(tagsDisponiveis.includes(tagTexto));
         }, 1000);
     })
 }
+
+inputTags.addEventListener("keypress", async (evento) => {
+    if (evento.key === "Enter") {
+        evento.preventDefault();
+        const tagTexto = inputTags.value.trim();
+        if (tagTexto !== "") {
+            try {
+                const tagExiste = await verificaTagsDisponiveis(tagTexto);
+                if (tagExiste) {
+                    const tagNova = document.createElement("li");
+                    tagNova.innerHTML = `<p>${tagTexto}</p> <img src="./img/close-black.svg" class="remove-tag">`
+                    listaTags.appendChild(tagNova);
+                    inputTags.value = "";
+                } else {
+                    alert("Tag não disponível");
+                }
+            } catch(error) {
+                console.error("Erro ao verificar a disponibilidade da tag:", error);
+                alert("Erro ao verificar a disponibilidade da tag");
+            }
+        }
+    }
+});
